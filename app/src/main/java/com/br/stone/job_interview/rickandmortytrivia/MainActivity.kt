@@ -6,10 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.br.stone.job_interview.rickandmortytrivia.model.Character
+import com.br.stone.job_interview.rickandmortytrivia.ui.components.CharacterItem
 import com.br.stone.job_interview.rickandmortytrivia.ui.theme.RickAndMortyTriviaTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,28 +18,28 @@ class MainActivity : ComponentActivity() {
             RickAndMortyTriviaTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.background,
+
                 ) {
-                    Greeting("Android")
+                    CharacterItem(
+                        Character(
+                            "Rick Sanchez",
+                            "Alive",
+                            "Human",
+                            "",
+                            "Male",
+                            "Earth (C-137)",
+                            "Citadel of Ricks",
+                            "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
+                            listOf(
+                                "https://rickandmortyapi.com/api/episode/1",
+                                "https://rickandmortyapi.com/api/episode/2"
+                            ),
+                            "2017-11-04T18:48:46.250Z"
+                        )
+                    )
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RickAndMortyTriviaTheme {
-        Greeting("Android")
     }
 }
