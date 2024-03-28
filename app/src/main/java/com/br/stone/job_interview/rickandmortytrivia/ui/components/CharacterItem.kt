@@ -24,8 +24,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.br.stone.job_interview.rickandmortytrivia.model.Character
-import com.br.stone.job_interview.rickandmortytrivia.ui.theme.RickMortyCyan
-import com.br.stone.job_interview.rickandmortytrivia.ui.theme.RickMortyGreen
+import com.br.stone.job_interview.rickandmortytrivia.ui.theme.RickMortyLogoCyan
+import com.br.stone.job_interview.rickandmortytrivia.ui.theme.RickMortyLogoGreen
 
 @Composable
 fun CharacterImage(urlImage: String) {
@@ -34,8 +34,8 @@ fun CharacterImage(urlImage: String) {
         .background(
             brush = Brush.horizontalGradient(
                 colors = listOf(
-                    RickMortyCyan,
-                    RickMortyGreen
+                    RickMortyLogoCyan,
+                    RickMortyLogoGreen
                 )
             )
         ).fillMaxWidth(),
@@ -71,7 +71,7 @@ fun CharacterItem(character: Character) {
             ,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CharacterImage(character.getUrlImage())
+            CharacterImage(character.getImage())
             Spacer(modifier = Modifier.height(110.dp))
             Column(
                 modifier = Modifier
@@ -90,25 +90,4 @@ fun CharacterItem(character: Character) {
     }
 }
 
-@Preview
-@Composable
-fun CharacterItemPreview() {
-    CharacterItem(
-        Character(
-            "Rick Sanchez",
-            "Alive",
-            "Human",
-            "",
-            "Male",
-            "Earth (C-137)",
-            "Citadel of Ricks",
-            "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
-            listOf(
-                "https://rickandmortyapi.com/api/episode/1",
-                "https://rickandmortyapi.com/api/episode/2"
-            ),
-            "2017-11-04T18:48:46.250Z"
-        )
-    )
-}
 
