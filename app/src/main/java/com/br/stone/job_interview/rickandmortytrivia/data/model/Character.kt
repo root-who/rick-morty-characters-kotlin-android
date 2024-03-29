@@ -1,6 +1,6 @@
-package com.br.stone.job_interview.rickandmortytrivia.model
+package com.br.stone.job_interview.rickandmortytrivia.data.model
+import androidx.compose.ui.graphics.Color
 import kotlinx.serialization.Serializable
-
 @Serializable
 data class Character(
     private val id: Int,
@@ -16,6 +16,10 @@ data class Character(
     private val url: String,
     private val created: String,
 ) {
+
+    fun getId(): Int {
+        return id
+    }
     fun getName(): String {
         return name
     }
@@ -56,5 +60,37 @@ data class Character(
         return created
     }
 
+    fun statusColor():Color{
+        if(status == "Alive") return Color.Green
+        if(status == "Dead") return Color.Red
+        return Color.Gray
+    }
+}
+
+@Serializable
+data class Origin(
+    private val name: String,
+    private val url: String,
+) {
+    fun getName(): String {
+        return name
+    }
+
+    fun getUrl(): String {
+        return url
+    }
+}
+@Serializable
+data class Location(
+    private val name: String,
+    private val url: String,
+) {
+    fun getName(): String {
+        return name
+    }
+
+    fun getUrl(): String {
+        return url
+    }
 
 }
