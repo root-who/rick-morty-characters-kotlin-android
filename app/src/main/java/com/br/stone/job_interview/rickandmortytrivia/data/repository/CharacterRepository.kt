@@ -8,9 +8,7 @@ class CharacterRepository(private val characterService: CharacterService ) {
 
     suspend fun getCharacterById(id:String) = characterService.fetchCharacterById(id)
 
-    suspend fun getCharacterByName(name:String) = characterService.fetchCharacterByName(name)
-
-    suspend fun getCharacterByStatus(status:String) = characterService.fetchCharacterByStatus(status)
+    suspend fun getCharacterByFilter(status:String?, name:String?) = characterService.fetchCharacterByStatus(status, name)
 
 
 }

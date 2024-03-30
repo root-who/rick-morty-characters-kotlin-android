@@ -33,13 +33,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.br.stone.job_interview.rickandmortytrivia.ui.theme.RickMortyLogoCyan
 import com.br.stone.job_interview.rickandmortytrivia.ui.theme.RickMortyLogoGreen
 
 @Composable
-fun Filter(){
+fun Filter(onFilter:(String?, String?, ()-> Unit)-> Unit, onUnfilter:(()-> Unit)-> Unit, onResetScroll:()-> Unit){
     var name by remember { mutableStateOf("") }
     var status by remember { mutableStateOf("") }
     var showFilter by remember { mutableStateOf(false) }
@@ -57,7 +58,8 @@ fun Filter(){
                     contentDescription = "Ícone de fechar",
                     tint = Color.Black,
                     modifier = Modifier
-                        .clickable { showFilter = !showFilter}.size(40.dp)
+                        .clickable { showFilter = !showFilter }
+                        .size(40.dp)
                 )
             }
             OutlinedTextField(
@@ -77,42 +79,24 @@ fun Filter(){
                 listOf("Alive", "Dead", "unknown").forEach{
                         it ->
                     Button(
-                        onClick = { status = it },
+                        onClick = {
+                            status = if(status == it){
+                                ""
+                            } else it
+
+                        },
                         shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(Color.LightGray)
+                        colors = ButtonDefaults.buttonColors(if (it == status) Color.Black else Color.LightGray)
                     ) {
                         Text(
-                            it,
-                            color = Color.Black
+                            it.replaceFirstChar{ it.uppercase() },
+                            color = (if (it == status) Color.White else Color.Black)
                         )
                     }
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Button(
-                onClick = { },
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier
-                    .width(350.dp)
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                RickMortyLogoCyan,
-                                RickMortyLogoGreen
-                            )
-                        )
-                    ),
-                colors = ButtonDefaults.buttonColors(Color.Transparent)
-            ) {
-                Text(
-                    "Filter",
-                    color = Color.Black,
-                    style = TextStyle(
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-            }
+            ActionButtons(onFilter=onFilter, onUnfilter=onUnfilter, status=status, name=name, onResetScroll=onResetScroll)
         }else{
             Row (
                 modifier = Modifier.width(350.dp),
@@ -123,10 +107,70 @@ fun Filter(){
                     contentDescription = "Ícone de pesquisa",
                     tint = Color.Black,
                     modifier = Modifier
-                        .clickable { showFilter = !showFilter}.size(40.dp)
+                        .clickable { showFilter = !showFilter }
+                        .size(40.dp)
                 )
             }
         }
 
     }
+}
+
+@Composable
+fun ActionButtons(onFilter:(String?, String?, ()-> Unit)-> Unit, onUnfilter:(()-> Unit)-> Unit, status:String, name:String, onResetScroll:()-> Unit){
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .width(350.dp)
+    ) {
+        Button(
+            onClick = {onFilter(status, name, onResetScroll) },
+            shape = RoundedCornerShape(8.dp),
+            modifier = Modifier
+                .width(150.dp)
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            RickMortyLogoCyan,
+                            RickMortyLogoGreen
+                        )
+                    )
+                ),
+            colors = ButtonDefaults.buttonColors(Color.Transparent)
+        ) {
+            Text(
+                "Filter",
+                color = Color.Black,
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                ),
+            )
+        }
+        Button(
+            onClick = { onUnfilter(onResetScroll) },
+            shape = RoundedCornerShape(8.dp),
+            modifier = Modifier
+                .width(150.dp)
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            RickMortyLogoCyan,
+                            RickMortyLogoGreen
+                        )
+                    )
+                ),
+            colors = ButtonDefaults.buttonColors(Color.Transparent)
+        ) {
+            Text(
+                "Unfilter",
+                color = Color.Black,
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                ),
+            )
+        }
+    }
+
 }

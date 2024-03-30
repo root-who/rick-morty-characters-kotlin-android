@@ -12,23 +12,13 @@ import com.br.stone.job_interview.rickandmortytrivia.data.model.Character
 
 @Composable
 fun CharacterList(characters: List<Character>, onCharacterSelected: (Int) -> Unit) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth(1f)
-            .verticalScroll(
-                rememberScrollState()
-            )
-    )
-    {
-        characters.forEach { character ->
-            Surface(
-                onClick = { onCharacterSelected(character.getId()) },
-            ) {
+    characters.forEach { character ->
+        Surface(
+            onClick = { onCharacterSelected(character.getId()) },
+        ) {
 
-                CharacterItem(character = character)
-            }
-
+            CharacterItem(character = character)
         }
+
     }
 }

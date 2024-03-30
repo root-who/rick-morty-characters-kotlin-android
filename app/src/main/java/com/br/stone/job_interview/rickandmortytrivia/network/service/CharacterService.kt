@@ -17,5 +17,5 @@ interface CharacterService {
     @GET("character/")
     suspend fun fetchCharacterByName(@Query("name") name:String): CharacterApiResponse
     @GET("character/")
-    suspend fun fetchCharacterByStatus(@Query("status") status:String): CharacterApiResponse
+    suspend fun fetchCharacterByStatus(@Query("status") status:String?,  @Query("name") name:String?): CharacterApiResponse
 }

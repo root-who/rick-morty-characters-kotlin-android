@@ -1,19 +1,17 @@
 package com.br.stone.job_interview.rickandmortytrivia.ui.viewmodel
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.br.stone.job_interview.rickandmortytrivia.data.model.Character
+import com.br.stone.job_interview.rickandmortytrivia.data.model.CharacterApiResponse
 import com.br.stone.job_interview.rickandmortytrivia.data.repository.CharacterRepository
 import com.br.stone.job_interview.rickandmortytrivia.network.service.ApiClient
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 
 class CharacterViewModel(
@@ -21,8 +19,12 @@ class CharacterViewModel(
     = CharacterRepository(ApiClient.characterService)
 ) : ViewModel() {
 
-    val charactersLiveData : MutableState<List<Character>> = mutableStateOf(listOf())
+    val charactersLiveData : MutableState<CharacterApiResponse?> = mutableStateOf(null)
     val characterByIdLiveData  = mutableStateOf<Character?>(null)
+    val charactersCurrentPage  = mutableIntStateOf(1)
+    val characterslastPage = mutableStateOf<Int?>(1)
+    val apiRequestError = mutableStateOf<String?>(null)
+
 
 
     init {
@@ -32,29 +34,52 @@ class CharacterViewModel(
     fun getCharacterByID(id: Int) {
         characterByIdLiveData.value = null
         viewModelScope.launch{
-            val response = repository.getCharacterById(id.toString())
-            characterByIdLiveData.value = response
-        }
-    }
-
-    private fun fetchCharacterByPage(page: Int){
-        viewModelScope.launch {
-            val response = repository.getCharacters(page.toString()).results
-            charactersLiveData.value = response
-
-        }
-    }
-    private fun fetchCharacterByName(name: String){
-        viewModelScope.launch {
-            val response = repository.getCharacterByName(name).results
-            charactersLiveData.value = response
+            try{
+                val response = repository.getCharacterById(id.toString())
+                characterByIdLiveData.value = response
+                apiRequestError.value = null
+            }
+            catch (e: HttpException) {
+                charactersLiveData.value = null
+                apiRequestError.value = "Opss... sounds like it happen an error during searching this character, try again later please :)"
+            }
 
         }
+
+
     }
-    private fun fetchCharacterByStatus(status: String){
+
+    fun fetchCharacterByPage(page: Int, onResetScroll:()-> Unit){
         viewModelScope.launch {
-            val response = repository.getCharacterByStatus(status).results
-            charactersLiveData.value = response
+            try{
+                val response = repository.getCharacters(page.toString())
+                charactersLiveData.value = response
+                charactersCurrentPage.intValue = page
+                characterslastPage.value = response.info.pages
+                apiRequestError.value = null
+                delay(20)
+                onResetScroll()
+            }
+            catch (e: HttpException) {
+                charactersLiveData.value = null
+                apiRequestError.value = "Opss... sounds like it happen an error during searching this characters page, try again later please :)"
+            }
+        }
+    }
+    fun fetchCharacterByFilter(status: String?, name:String?, onResetScroll:()-> Unit ){
+        viewModelScope.launch {
+            try{
+                val response = repository.getCharacterByFilter(status, name)
+                charactersLiveData.value = response
+                charactersCurrentPage.intValue = 1
+                characterslastPage.value = response.info.pages
+                apiRequestError.value = null
+            }
+            catch (e: HttpException) {
+                charactersLiveData.value = null
+                apiRequestError.value = "Opss... sounds like it happen an error during filtering or does not exist characters with this combined filters, try again please  :)"
+            }
+
 
         }
     }
@@ -62,8 +87,11 @@ class CharacterViewModel(
 
     private fun fetchCharacters(){
         viewModelScope.launch {
-            val response = repository.getCharacters("1").results
+            val response = repository.getCharacters("1")
             charactersLiveData.value = response
+            charactersCurrentPage.intValue = 1
+            characterslastPage.value = response.info.pages
+            apiRequestError.value = null
         }
 
     }

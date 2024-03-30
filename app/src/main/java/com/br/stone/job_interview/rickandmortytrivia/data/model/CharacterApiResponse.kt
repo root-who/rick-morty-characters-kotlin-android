@@ -4,10 +4,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CharacterApiResponseInfo(
-    private val count: Int,
-    private val pages: Int,
-    private val next: String?,
-    private val prev: String?
+     val count: Int,
+     val pages: Int,
+     val next: String?,
+     val prev: String?
 ) {
 
 }

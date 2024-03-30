@@ -4,6 +4,7 @@ plugins {
     kotlin("plugin.serialization") version "1.9.23"
     id ("kotlin-kapt")
     id ("com.google.dagger.hilt.android") version "2.50" apply false
+    id("org.jmailen.kotlinter") version "4.3.0" apply false
 }
 
 android {
