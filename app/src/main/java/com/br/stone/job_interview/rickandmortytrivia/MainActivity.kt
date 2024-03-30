@@ -3,44 +3,55 @@ package com.br.stone.job_interview.rickandmortytrivia
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.br.stone.job_interview.rickandmortytrivia.ui.screens.CharacterDetails
 import com.br.stone.job_interview.rickandmortytrivia.ui.theme.RickAndMortyTriviaTheme
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.br.stone.job_interview.rickandmortytrivia.ui.screens.HomeScreen
+import com.br.stone.job_interview.rickandmortytrivia.ui.viewmodel.CharacterViewModel
+
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             RickAndMortyTriviaTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.background,
                 ) {
-                    Greeting("Android")
+                    val navController = rememberNavController()
+                    val characterViewModel = viewModel<CharacterViewModel>()
+                    NavHost(navController = navController, startDestination = "homeScreen") {
+                        composable("homeScreen") {
+                            HomeScreen(
+                                onCharacterSelected = { characterId ->
+                                    characterViewModel.getCharacterByID(characterId)
+                                    navController.navigate(
+                                        "characterDetailScreen/${characterId}"
+                                    )
+                                },
+                                characterViewModel = characterViewModel
+                            )
+                        }
+                        composable(
+                            "characterDetailScreen/{characterId}",
+                            arguments = listOf(navArgument("characterId") {
+                                type = NavType.IntType
+                            })
+                        ) {
+                            CharacterDetails(characterViewModel = characterViewModel)
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RickAndMortyTriviaTheme {
-        Greeting("Android")
     }
 }
